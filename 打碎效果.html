@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="dom">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html,
+        body {
+            overflow: hidden;
+        }
+
+        body {
+            margin: 0;
+            background: #000;
+        }
+
+        .bigBox {
+            width: 1000px;
+            height: 500px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            margin-left: -500px;
+            margin-top: -250px;
+            border-radius: 10px;
+            perspective: 1000px;
+        }
+
+        .content {
+            width: 1000px;
+            height: 500px;
+            box-shadow: 0 0 10px 0 rgb(212, 212, 212);
+            transform-style: preserve-3d;
+            transition: 2s;
+        }
+
+        .content:hover {
+            transform: rotateY(30deg);
+        }
+
+        .box,
+        .snk {
+            width: 1000px;
+            height: 500px;
+            font-size: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+            overflow: hidden;
+        }
+
+        .snk {
+            opacity: 0;
+        }
+
+        .box {
+            z-index: 5;
+        }
+
+        .box div {
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+        }
+
+        .alt span,
+        .alt2 span {
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bigBox">
+        <div class="content">
+            <div class="box">
+
+            </div>
+            <div class="snk"></div>
+        </div>
+    </div>
+    <div class="alt">
+
+    </div>
+    <div class="alt2"></div>
+</body>
+
+</html>
+<script src="tools.js"></script>
+<script>
+    //轮播图
+    (function () {
+        const bigBox = document.querySelector('.bigBox');
+        const box = document.querySelector('.box');
+        const snk = document.querySelector('.snk');
+        let imgData = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg']
+        let str = '';
+        let divStyle = [];
+        let num = 0;
+        let num2 = 1;
+        let timer;
+        let onOff = true;
+        for (let i = 0; i < 200; i++) {
+            str += `<div></div>`
+        }
+        box.innerHTML = str;
+        const divs = box.children;
+        snk.style.background = 'url(' + imgData[num2] + ')';
+        Array.from(divs).forEach(function (item, index) {
+            divStyle.push({
+                left: item.offsetLeft,
+                top: item.offsetTop
+            })
+            item.style.background = 'url(' + imgData[num] + ')'
+            item.style.backgroundPosition = divStyle[index].left * -1 + 'px' + ' ' + divStyle[index].top * -1 + 'px';
+        })
+
+        function csh() {
+            Array.from(divs).forEach(function (item, index) {
+                item.style.position = 'absolute';
+                item.style.left = divStyle[index].left + 'px';
+                item.style.top = divStyle[index].top + 'px';
+            })
+        }
+        csh();
+
+        timer = setInterval(function () {
+            num = (num + 1) % 5;
+            broken();
+        }, 3000)
+        box.addEventListener('mouseover', function () {
+            // clearInterval(timer);
+ SVGCircleElement        })
+        box.addEventListener('mouseout', function () {
+
+        })
+        function broken(e) {
+            if (!onOff) return;
+            onOff = false;
+            num2 = (num2 + 1) % 5;
+            animation({
+                el: snk,
+                attrs: {
+                    opacity: 1,
+                },
+                duration: 1000,
+                cb() {
+                    snk.style.opacity = '';
+                }
+            })
+            for (let i = 0; i < divs.length; i++) {
+                const a = Math.random() * (1 - (-1)) + -1;
+                const b = Math.random() * (1 - (-1)) + -1;
+                animation({
+                    el: divs[i],
+                    attrs: {
+                        left: divStyle[i].left + Math.random() * 3000 * a,
+                        top: divStyle[i].top + Math.random() * 3000 * b,
+                        opacity: 0,
+                    },
+                    duration: 1000,
+                    fx: 'easeIn',
+                    cb() {
+                        csh();
+                        divs[i].style.background = 'url(' + imgData[num] + ')';
+                        divs[i].style.backgroundPosition = divStyle[i].left * -1 + 'px' + ' ' + divStyle[i].top * -1 + 'px';
+                        divs[i].style.opacity = 1;
+                        snk.style.background = 'url(' + imgData[num2] + ')';
+                        setTimeout(function () {
+                            onOff = true;
+                        }, 800);
+                    }
+                })
+            }
+        }
+    })();
+
+    (function () {
+        const alt = document.querySelector('.alt');
+        const alt2 = document.querySelector('.alt2');
+        let onOff = true;
+        document.addEventListener('click', function (e) {
+            // alt.innerHTML = '';
+            let target = e.target;
+            let x = e.pageX;
+            let y = e.pageY;
+            let str = '';
+            if (target.classList.contains('dom')) {
+                if (!onOff) return;
+                onOff = false;
+                for (let i = 0; i < 20; i++) {
+                    str += `<span></span>`
+                }
+                alt.innerHTML = str;
+                let balls = document.querySelectorAll('.alt span');
+                alt.style.display = 'block';
+                balls.forEach(function (item) {
+                    const ballWidth = Math.round(Math.random() * (15 - (5)) + 5);
+                    const a = Math.random() * (1 - (-1)) + -1;
+                    const b = Math.random() * (1 - (-1)) + -1;
+                    item.style.width = ballWidth + 'px';
+                    item.style.height = ballWidth + 'px';
+                    item.style.left = x + 'px';
+                    item.style.top = y + 'px';
+                    item.style.background = createColor();
+                    animation({
+                        el: item,
+                        attrs: {
+                            left: x + 70 * a,
+                            top: y + 70 * b,
+                            opacity: 0
+                        },
+                        duration: 700,
+                        cb() {
+                            item.style.opacity = '';
+                            alt.style.display = '';
+                            alt.innerHTML = '';
+                            onOff = true;
+                        }
+                    })
+                })
+            }
+        })
+        document.addEventListener('mousemove', function (e) {
+            let target = e.target;
+            let x = e.pageX;
+            let y = e.pageY;
+            if (target.classList.contains('dom')) {
+                const bal = document.createElement('span');
+                alt2.appendChild(bal)
+                let balls = document.querySelectorAll('.alt2 span');
+                balls.forEach(function (item) {
+                    if (item.animation) return;
+                    const ballWidth = Math.round(Math.random() * (15 - (5)) + 5);
+                    const a = Math.random() * (1 - (-1)) + -1;
+                    const b = Math.random() * (1 - (-1)) + -1;
+                    item.style.width = ballWidth + 'px';
+                    item.style.height = ballWidth + 'px';
+                    item.style.left = x + 'px';
+                    item.style.top = y + 'px';
+                    item.style.background = createColor();
+                    animation({
+                        el: item,
+                        attrs: {
+                            left: x + 50 * a,
+                            top: y + 50 * b,
+                            opacity: 0
+                        },
+                        duration: 700,
+                        cb() {
+                            if (!item.animation) {
+                                alt2.removeChild(item)
+                            }
+                        }
+                    })
+                })
+            }
+        })
+    })();
+</script>
